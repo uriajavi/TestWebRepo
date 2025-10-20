@@ -6,15 +6,50 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Form Test Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript">
+            function handleSignInOnClick (){
+                //Obtenemos los objetos para los elementos del form
+                const tfEmail=document.getElementById("tfEmail");
+                const tfPassword=document.getElementById("tfPassword");
+                const emailRegExp=
+                    new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+                //Validar que email y password están informados
+                if(tfEmail.value.trim()===""||tfPassword.value.trim()==="")
+                {
+                    window.alert("Email and password must be filled.");
+                    return;
+                }    
+                //Validar que email and password cumplen longitud
+                if(tfEmail.value.length>255){
+                    window.alert("Email cannot have more than 255 characters.");
+                    return;
+                }    
+                if (tfPassword.value.length>255){
+                    window.alert("Password cannot have more than 255 characters.");
+                    return;
+                }    
+                //Validar formato de email
+                if(!emailRegExp.exec(tfEmail.value.trim())){
+                    window.alert("Email has not a valid format.");
+                    return;
+                }
+                event.stopPropagation();
+            }
+        </script>
     </head>
-    <body>
-        <div>TODO write content</div>
-	<h2>Header</h2>
-	Another line.
-	<strong>Hello</strong>
-	This is a plain text.
+    <body style="background-color:lightblue">
+        <div>Test Form</div>
+        <form method="GET" 
+              action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin">
+            <label>Email</label><br>
+            <input type="email" id="tfEmail" name="tfEmail"/><br>
+            <label>Password</label><br>
+            <input type="password" id="tfPassword" name="tfPassword"/><br>
+            <button id="btSignIn"
+                    onclick="handleSignInOnClick();">Sign In</button>
+        </form>
     </body>
 </html>
