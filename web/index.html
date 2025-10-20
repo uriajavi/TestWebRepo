@@ -17,35 +17,43 @@ and open the template in the editor.
                 const signInForm=document.getElementById("signInForm");
                 const emailRegExp=
                     new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+                //Detenemos la propagación de eventos y la acción por defecto
+                //del formulario
+                event.preventDefault();
+                event.stopPropagation();
                 //Validar que email y password están informados
                 if(tfEmail.value.trim()===""||tfPassword.value.trim()==="")
                 {
                     window.alert("Email and password must be filled.");
-                    event.stopPropagation();
+                    return;
                 }    
                 //Validar que email and password cumplen longitud
                 if(tfEmail.value.length>255){
                     window.alert("Email cannot have more than 255 characters.");
-                    event.stopPropagation();
+                    return;
                 }    
                 if (tfPassword.value.length>255){
                     window.alert("Password cannot have more than 255 characters.");
-                    event.stopPropagation();
+                    return;
                 }    
                 //Validar formato de email
                 if(!emailRegExp.exec(tfEmail.value.trim())){
                     window.alert("Email has not a valid format.");
-                    event.stopPropagation();
                     return;
                 }
-                //signInForm.submit();
+                //Si no hay error envianmos formulario estableciendo path params
+                const valueTfEmail=tfEmail.value.trim();
+                const valueTfPassword=tfPassword.value.trim();
+                signInForm.action=signInForm.action
+                    +`${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`;
+                signInForm.submit();
             }
         </script>
     </head>
     <body style="background-color:lightblue">
         <div>Test Form</div>
         <form method="GET" 
-              action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin"
+              action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/"
               id="signInForm">
             <label>Email</label><br>
             <input type="email" id="tfEmail" name="tfEmail"/><br>
