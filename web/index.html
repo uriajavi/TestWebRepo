@@ -37,7 +37,7 @@ and open the template in the editor.
                     return;
                 }    
                 //Validar formato de email
-                if(!emailRegExp.exec(tfEmail.value.trim())){
+                if(!emailRegExp.test(tfEmail.value.trim())){
                     window.alert("Email has not a valid format.");
                     return;
                 }
@@ -47,7 +47,6 @@ and open the template in the editor.
                 signInForm.action=signInForm.action
                     +`${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`;
                 signInForm.submit();
-            }
         </script>
     </head>
     <body style="background-color:lightblue">
