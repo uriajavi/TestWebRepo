@@ -11,47 +11,42 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script type="text/javascript">
             function handleSignInOnClick (event){
-                //Obtenemos los objetos para los elementos del form
-                const tfEmail=document.getElementById("tfEmail");
-                const tfPassword=document.getElementById("tfPassword");
-                const signInForm=document.getElementById("signInForm");
-                //Creamos un objeto RegExp para validar el email
-                const emailRegExp=
-                    new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-                //Detenemos la propagación de eventos y la acción por defecto
-                //del formulario
-                event.preventDefault();
-                event.stopPropagation();
-                //Validar que email y password están informados
-                if(tfEmail.value.trim()===""||tfPassword.value.trim()==="")
-                {
-                    window.alert("Email and password must be filled.");
-                    return;
-                }    
-                //Validar que email and password cumplen longitud
-                if(tfEmail.value.length>255){
-                    window.alert("Email cannot have more than 255 characters.");
-                    return;
-                }    
-                if (tfPassword.value.length>255){
-                    window.alert("Password cannot have more than 255 characters.");
-                    return;
-                }    
-                //Validar formato de email
-                if(!emailRegExp.exec(tfEmail.value.trim())){
-                    window.alert("Email has not a valid format.");
-                    return;
+                try{
+                    //Obtenemos los objetos para los elementos del form
+                    const tfEmail=document.getElementById("tfEmail");
+                    const tfPassword=document.getElementById("tfPassword");
+                    const signInForm=document.getElementById("signInForm");
+                    //Creamos un objeto RegExp para validar el email
+                    const emailRegExp=
+                        new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+                    //Detenemos la propagación de eventos y la acción por defecto
+                    //del formulario
+                    event.preventDefault();
+                    event.stopPropagation();
+                    //Validar que email y password están informados
+                    if(tfEmail.value.trim()===""||tfPassword.value.trim()==="")
+                    throw new Error("Email and password must be filled.");
+                    //Validar que email and password cumplen longitud
+                    if(tfEmail.value.length>255)
+                    throw new Error("Email cannot have more than 255 characters.");
+                    if (tfPassword.value.length>255)
+                    throw new Error("Password cannot have more than 255 characters.");
+                    //Validar formato de email
+                    if(!emailRegExp.exec(tfEmail.value.trim()))
+                    throw new Error("Email has not a valid format.");
+                    //Si no hay error envianmos formulario estableciendo path params:
+                    //Obtenemos los valores de los campos
+                    const valueTfEmail=tfEmail.value.trim();
+                    const valueTfPassword=tfPassword.value.trim();
+                    //Añadimos al action los valores de email y password
+                    //como parámetros del path
+                    signInForm.action=signInForm.action
+                        +`${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`;
+                    //Enviamos el formulario
+                    signInForm.submit();
+                }catch(error){
+                    window.alert(error.message);
                 }
-                //Si no hay error envianmos formulario estableciendo path params:
-                //Obtenemos los valores de los campos
-                const valueTfEmail=tfEmail.value.trim();
-                const valueTfPassword=tfPassword.value.trim();
-                //Añadimos al action los valores de email y password
-                //como parámetros del path
-                signInForm.action=signInForm.action
-                    +`${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`;
-                //Enviamos el formulario
-                signInForm.submit();
             }
         </script>
     </head>
