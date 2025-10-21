@@ -15,8 +15,9 @@ and open the template in the editor.
                 const tfEmail=document.getElementById("tfEmail");
                 const tfPassword=document.getElementById("tfPassword");
                 const signInForm=document.getElementById("signInForm");
+                //Creamos un objeto RegExp para validar el email
                 const emailRegExp=
-                    new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+                    new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
                 //Detenemos la propagación de eventos y la acción por defecto
                 //del formulario
                 event.preventDefault();
@@ -37,16 +38,21 @@ and open the template in the editor.
                     return;
                 }    
                 //Validar formato de email
-                if(!emailRegExp.test(tfEmail.value.trim())){
+                if(!emailRegExp.exec(tfEmail.value.trim())){
                     window.alert("Email has not a valid format.");
                     return;
                 }
-                //Si no hay error envianmos formulario estableciendo path params
+                //Si no hay error envianmos formulario estableciendo path params:
+                //Obtenemos los valores de los campos
                 const valueTfEmail=tfEmail.value.trim();
                 const valueTfPassword=tfPassword.value.trim();
+                //Añadimos al action los valores de email y password
+                //como parámetros del path
                 signInForm.action=signInForm.action
                     +`${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`;
+                //Enviamos el formulario
                 signInForm.submit();
+            }
         </script>
     </head>
     <body style="background-color:lightblue">
