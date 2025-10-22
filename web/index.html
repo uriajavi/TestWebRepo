@@ -108,24 +108,64 @@ and open the template in the editor.
                             throw new Error(text || 'Unexpected error!!');
                           });
                         }
-                        return response;
-                      })
-                        //Process OK response 
-                        .then(data => {
-                            msgBox.className = 'success';
-                            msgBox.textContent = 'Customer signed in successfully!';
-                            msgBox.style.display = 'block';
-                            //Store response data into Customer object
-                            
-                        })
-                        //Process errors
-                        .catch(error => {
+                        return response.text();
+                    })
+                    //Process OK response 
+                    .then(data => {
+                        msgBox.className = 'success';
+                        msgBox.textContent = 'Customer signed in successfully!';
+                        msgBox.style.display = 'block';
+                        //Store response data into Customer object and in session storage 
+                        storeResponseXMLData(data);
+                        //get customer object from storage
+                        const customerName=sessionStorage.getItem("customer.firstName");
+                        msgBox.textContent = msgBox.textContent+'Hi '+customerName+'!';
+                    })
+                    //Process errors
+                    .catch(error => {
                             msgBox.className = 'error';
                             msgBox.textContent = 'Error: ' + error.message;
                             msgBox.style.display = 'block';
-                        }
-                    );
-          }
+                    }
+                );
+            }
+            /**
+             * Read XML response data and store it in session client storage. 
+             * @param {type} xmlString Response text 
+             * @returns {undefined}
+             */
+            function storeResponseXMLData (xmlString){
+                //Create XML parser
+                const parser = new DOMParser();
+                //Parse response XML data
+                const xmlDoc=parser.parseFromString(xmlString,"application/xml");
+                //Create Customer object with data received in response
+                const customer=new Customer(
+                    xmlDoc.getElementsByTagName("id")[0].textContent,
+                    xmlDoc.getElementsByTagName("firstName")[0].textContent,
+                    xmlDoc.getElementsByTagName("lastName")[0].textContent,
+                    xmlDoc.getElementsByTagName("middleInitial")[0].textContent,
+                    xmlDoc.getElementsByTagName("street")[0].textContent,
+                    xmlDoc.getElementsByTagName("city")[0].textContent,
+                    xmlDoc.getElementsByTagName("state")[0].textContent,
+                    xmlDoc.getElementsByTagName("zip")[0].textContent,
+                    xmlDoc.getElementsByTagName("phone")[0].textContent,
+                    xmlDoc.getElementsByTagName("email")[0].textContent,
+                    xmlDoc.getElementsByTagName("password")[0].textContent,
+                );
+                // Save data to sessionStorage
+                sessionStorage.setItem("customer.id", customer.id);
+                sessionStorage.setItem("customer.firstName", customer.firstName);
+                sessionStorage.setItem("customer.lastName", customer.lastName);
+                sessionStorage.setItem("customer.middleInitial", customer.middleInitial);
+                sessionStorage.setItem("customer.street", customer.street);
+                sessionStorage.setItem("customer.city", customer.city);
+                sessionStorage.setItem("customer.state", customer.state);
+                sessionStorage.setItem("customer.zip", customer.zip);
+                sessionStorage.setItem("customer.phone", customer.phone);
+                sessionStorage.setItem("customer.email", customer.email);
+                sessionStorage.setItem("customer.password", customer.password);
+            }
     </script>
     </head>
     <body style="background-color:lightblue">
