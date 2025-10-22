@@ -28,7 +28,7 @@ and open the template in the editor.
               border: 1px solid red;
             }
         </style>
-
+        <script type="text/javascript" src="model.js"></script>
         <script type="text/javascript">
             /**
              * Validate form data and call another function to send data
@@ -38,26 +38,25 @@ and open the template in the editor.
              */
             function handleSignInOnClick (event){
                 try{
-                    //Obtenemos los objetos para los elementos del form
+                    //Get references to form fields
                     const tfEmail=document.getElementById("tfEmail");
                     const tfPassword=document.getElementById("tfPassword");
                     const signInForm=document.getElementById("signInForm");
-                    //Creamos un objeto RegExp para validar el email
+                    //Create a RegExp object to validate email
                     const emailRegExp=
                         new RegExp("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-                    //Detenemos la propagación de eventos y la acción por defecto
-                    //del formulario
+                    //Stop event propagation and default navigator actions 
                     event.preventDefault();
                     event.stopPropagation();
-                    //Validar que email y password están informados
+                    //Validate email and password filling
                     if(tfEmail.value.trim()===""||tfPassword.value.trim()==="")
                     throw new Error("Email and password must be filled.");
-                    //Validar que email and password cumplen longitud
+                    //Validate email and password length
                     if(tfEmail.value.length>255)
                     throw new Error("Email cannot have more than 255 characters.");
                     if (tfPassword.value.length>255)
                     throw new Error("Password cannot have more than 255 characters.");
-                    //Validar formato de email
+                    //Email validation using regular expression
                     if(!emailRegExp.exec(tfEmail.value.trim()))
                     throw new Error("Email has not a valid format.");
                     //Call to function for sending data and process response
@@ -76,13 +75,13 @@ and open the template in the editor.
              * @returns {undefined}
              */
             function sendRequestAndProcessResponse (){
-                //Obtenemos referencias 
+                //get form and message div references
                 const signInForm=document.getElementById("signInForm");
                 const msgBox = document.getElementById("responseMsg");
-                //Obtenemos los valores de los campos
+                //get field´s values
                 const valueTfEmail=tfEmail.value.trim();
                 const valueTfPassword=tfPassword.value.trim();
-                //Realizamos la petición usando el API Fetch
+                //Send Request using fetch API (window.fetch method)
                 fetch(signInForm.action +
                       `${encodeURIComponent(valueTfEmail)}/${encodeURIComponent(valueTfPassword)}`, 
                     {
@@ -91,19 +90,19 @@ and open the template in the editor.
                           'Content-Type': 'application/xml'
                         }
                     }).then(response => {
-                        //Procesado de respuesta error 401
+                        //Process HTTP 401 error
                         if (response.status===401){
                           return response.text().then(text => {
                             throw new Error('Wrong credentials!!');
                           });
                         }
-                        //Procesado de respuesta error 500
+                        //Process HTTP 500 error
                         else if (response.status===500){
                           return response.text().then(text => {
                             throw new Error('Server Error. Please try later!!');
                           });
                         }
-                        //Procesado de respuesta otro error
+                        //Process any other error
                         else if (!response.ok) {
                           return response.text().then(text => {
                             throw new Error(text || 'Unexpected error!!');
@@ -111,13 +110,15 @@ and open the template in the editor.
                         }
                         return response;
                       })
-                        //Procesado de respuesta OK 
+                        //Process OK response 
                         .then(data => {
                             msgBox.className = 'success';
                             msgBox.textContent = 'Customer signed in successfully!';
                             msgBox.style.display = 'block';
+                            //Store response data into Customer object
+                            
                         })
-                        //Procesado de errores
+                        //Process errors
                         .catch(error => {
                             msgBox.className = 'error';
                             msgBox.textContent = 'Error: ' + error.message;
