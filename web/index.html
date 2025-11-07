@@ -119,6 +119,20 @@ and open the template in the editor.
                         storeResponseXMLData(data);
                         //get customer object from storage
                         const customerName=sessionStorage.getItem("customer.firstName");
+                        //create XML from customer's data stored
+                        const customerXML=`<customer>
+                                <city>${sessionStorage.getItem("customer.city")}</city>
+                                <email>${sessionStorage.getItem("customer.email")}</email>
+                                <firstName>${sessionStorage.getItem("customer.firstName")}</firstName>
+                                <id>${sessionStorage.getItem("customer.id")}</id>
+                                <lastName>${sessionStorage.getItem("customer.lastName")}</lastName>
+                                <middleInitial>${sessionStorage.getItem("customer.middleInitial")}</middleInitial>
+                                <password>${sessionStorage.getItem("customer.password")}</password>
+                                <phone>${sessionStorage.getItem("customer.phone")}</phone>
+                                <state>${sessionStorage.getItem("customer.state")}</state>
+                                <street>${sessionStorage.getItem("customer.street")}</street>
+                                <zip>${sessionStorage.getItem("customer.zip")}</zip>
+                            </customer>`.trim();
                         msgBox.textContent = msgBox.textContent+'Hi '+customerName+'!';
                     })
                     //Process errors
@@ -127,7 +141,7 @@ and open the template in the editor.
                             msgBox.textContent = 'Error: ' + error.message;
                             msgBox.style.display = 'block';
                     }
-                );
+                );        
             }
             /**
              * Read XML response data and store it in session client storage. 
@@ -165,12 +179,13 @@ and open the template in the editor.
                 sessionStorage.setItem("customer.phone", customer.phone);
                 sessionStorage.setItem("customer.email", customer.email);
                 sessionStorage.setItem("customer.password", customer.password);
+                console.log("Customer's data for "+customer.id+" saved on session storage.");
             }
     </script>
     </head>
     <body style="background-color:lightblue">
         <div>Test Form</div>
-        <form action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/"
+        <form action="/CRUDBankServerSide/webresources/customer/sigin/"
               id="signInForm">
             <label>Email</label><br>
             <input type="email" id="tfEmail" name="tfEmail"/><br>

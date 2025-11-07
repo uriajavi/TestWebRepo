@@ -26,4 +26,3 @@ function Customer(  id,
     this.email = email;
     this.password = password;
 }
-
