@@ -29,6 +29,7 @@ and open the template in the editor.
             }
         </style>
         <script type="text/javascript" src="model.js"></script>
+        <script type="text/javascript" src="assets/h5p-player/main.bundle.js" charset="UTF-8"></script>
         <script type="text/javascript">
             /**
              * Validate form data and call another function to send data
@@ -180,5 +181,19 @@ and open the template in the editor.
                     onclick="handleSignInOnClick(event);">Sign In</button>
         </form>
         <div id="responseMsg"></div>
+        <div id="h5p-container" style="width: 50%"></div>
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', function () {
+              const el = document.getElementById('h5p-container');
+              const options = {
+                h5pJsonPath: 'assets/h5p-content', // Path to the extracted H5P content
+                frameJs: 'assets/h5p-player/frame.bundle.js', // Path to player's frame.bundle.js
+                frameCss: 'assets/h5p-player/styles/h5p.css', // Path to player's h5p.css
+                librariesPath: 'assets/h5p-libraries'
+              };
+              let h5p=new H5PStandalone.H5P(el, options);
+              console.log(h5p);
+            });            
+        </script>    
     </body>
 </html>
