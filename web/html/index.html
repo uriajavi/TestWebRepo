@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Form Test Page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/css/test.css">        
+        <script type="text/javascript" src="model.js"></script>
+        <script type="text/javascript" src="indexController.js"></script>
+    </head>
+    <body>
+        <div>Test Form</div>
+        <form action="/CRUDBankServerSide/webresources/customer/sigin/"
+              id="signInForm">
+            <label id="labelEmail">Email</label><br>
+            <input type="email" id="tfEmail" name="tfEmail"/><br>
+            <label>Password</label><br>
+            <input type="password" id="tfPassword" name="tfPassword"/><br>
+            <button id="btSignIn">Sign In</button>
+        </form>
+        <div id="responseMsg"></div>
+    </body>
+</html>

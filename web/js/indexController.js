@@ -1,44 +1,36 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
-    <head>
-        <title>Form Test Page</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            #responseMsg {
-              margin-top: 1em;
-              padding: 0.5em;
-              display: none;
-            }
+/*
+ * Attributes to be used by this controller.
+ * Elements to be managed by the controller.
+ */
 
-            #responseMsg.success {
-              color: green;
-              background-color: #e0ffe0;
-              border: 1px solid green;
-            }
+const signInForm=document.getElementById("signInForm");
+const tfEmail=document.getElementById("tfEmail");
+const tfPassword=document.getElementById("tfPassword");
+const btSignIn=document.getElementById("btSignIn");
+const responseMsg=document.getElementById("responseMsg");
 
-            #responseMsg.error {
-              color: red;
-              background-color: #ffe0e0;
-              border: 1px solid red;
-            }
-        </style>
-        <script type="text/javascript" src="model.js"></script>
-        <script type="text/javascript" src="assets/h5p-player/main.bundle.js" charset="UTF-8"></script>
-        <script type="text/javascript">
-            /**
-             * Validate form data and call another function to send data
-             * and process response
-             * @param {type} event
-             * @returns {undefined}
-             */
-            function handleSignInOnClick (event){
-                try{
+const customers=new Set();
+
+/*
+ * Event handlers association.
+ */
+signInForm.addEventListener("submit",handleFormSubmit);
+tfEmail.addEventListener("blur",handleEmailBlur);
+tfPassword.addEventListener("blur",handlePasswordBlur);
+btSignIn.addEventListener("click",handleSignInOnClick);
+
+
+/*
+ * EVENT HANDLERS
+ */
+ /**
+ * Validate form data and call another function to send data
+ * and process response
+ * @param {type} event
+ * @returns {undefined}
+ */
+ function handleSignInOnClick (event){
+    try{
                     //Get references to form fields
                     const tfEmail=document.getElementById("tfEmail");
                     const tfPassword=document.getElementById("tfPassword");
@@ -62,20 +54,22 @@ and open the template in the editor.
                     throw new Error("Email has not a valid format.");
                     //Call to function for sending data and process response
                     sendRequestAndProcessResponse();
-                }catch(error){
+    }catch(error){
                     //Show error messages in red styled div
                     const msgBox = document.getElementById("responseMsg");
                     msgBox.className = 'error';
                     msgBox.textContent = 'Error: ' + error.message;
                     msgBox.style.display = 'block';
-                }
-            }
-            /**
-             * Create a GET request and process HTTP OK and ERROR responses
-             * using fetch API.
-             * @returns {undefined}
-             */
-            function sendRequestAndProcessResponse (){
+    }
+}
+/*
+ * UTILITY FUNCTIONS
+ */
+/**
+ * 
+ * @returns {undefined}
+ */
+function sendRequestAndProcessResponse (){
                 //get form and message div references
                 const signInForm=document.getElementById("signInForm");
                 const msgBox = document.getElementById("responseMsg");
@@ -120,6 +114,20 @@ and open the template in the editor.
                         storeResponseXMLData(data);
                         //get customer object from storage
                         const customerName=sessionStorage.getItem("customer.firstName");
+                        //create XML from customer's data stored
+                        const customerXML=`<customer>
+                                <city>${sessionStorage.getItem("customer.city")}</city>
+                                <email>${sessionStorage.getItem("customer.email")}</email>
+                                <firstName>${sessionStorage.getItem("customer.firstName")}</firstName>
+                                <id>${sessionStorage.getItem("customer.id")}</id>
+                                <lastName>${sessionStorage.getItem("customer.lastName")}</lastName>
+                                <middleInitial>${sessionStorage.getItem("customer.middleInitial")}</middleInitial>
+                                <password>${sessionStorage.getItem("customer.password")}</password>
+                                <phone>${sessionStorage.getItem("customer.phone")}</phone>
+                                <state>${sessionStorage.getItem("customer.state")}</state>
+                                <street>${sessionStorage.getItem("customer.street")}</street>
+                                <zip>${sessionStorage.getItem("customer.zip")}</zip>
+                            </customer>`.trim();
                         msgBox.textContent = msgBox.textContent+'Hi '+customerName+'!';
                     })
                     //Process errors
@@ -128,19 +136,37 @@ and open the template in the editor.
                             msgBox.textContent = 'Error: ' + error.message;
                             msgBox.style.display = 'block';
                     }
-                );
-            }
-            /**
-             * Read XML response data and store it in session client storage. 
-             * @param {type} xmlString Response text 
-             * @returns {undefined}
-             */
-            function storeResponseXMLData (xmlString){
+                );        
+}
+/**
+* Read XML response data and store it in session client storage. 
+* @param {type} xmlString Response text 
+* @returns {undefined}
+*/
+function storeResponseXMLData (xmlString){
                 //Create XML parser
                 const parser = new DOMParser();
                 //Parse response XML data
                 const xmlDoc=parser.parseFromString(xmlString,"application/xml");
                 //Create Customer object with data received in response
+                
+                //
+                while(i<lenght.Array){
+                    const customer=new Customer(
+                        xmlDoc.getElementsByTagName("id")[i].textContent,
+                        xmlDoc.getElementsByTagName("firstName")[0].textContent,
+                        xmlDoc.getElementsByTagName("lastName")[0].textContent,
+                        xmlDoc.getElementsByTagName("middleInitial")[0].textContent,
+                        xmlDoc.getElementsByTagName("street")[0].textContent,
+                        xmlDoc.getElementsByTagName("city")[0].textContent,
+                        xmlDoc.getElementsByTagName("state")[0].textContent,
+                        xmlDoc.getElementsByTagName("zip")[0].textContent,
+                        xmlDoc.getElementsByTagName("phone")[0].textContent,
+                        xmlDoc.getElementsByTagName("email")[0].textContent,
+                        xmlDoc.getElementsByTagName("password")[0].textContent,
+                    );
+                    customers.add(customer);
+                }
                 const customer=new Customer(
                     xmlDoc.getElementsByTagName("id")[0].textContent,
                     xmlDoc.getElementsByTagName("firstName")[0].textContent,
@@ -166,34 +192,45 @@ and open the template in the editor.
                 sessionStorage.setItem("customer.phone", customer.phone);
                 sessionStorage.setItem("customer.email", customer.email);
                 sessionStorage.setItem("customer.password", customer.password);
-            }
-    </script>
-    </head>
-    <body style="background-color:lightblue">
-        <div>Test Form</div>
-        <form action="http://localhost:8080/CRUDBankServerSide/webresources/customer/sigin/"
-              id="signInForm">
-            <label>Email</label><br>
-            <input type="email" id="tfEmail" name="tfEmail"/><br>
-            <label>Password</label><br>
-            <input type="password" id="tfPassword" name="tfPassword"/><br>
-            <button id="btSignIn"
-                    onclick="handleSignInOnClick(event);">Sign In</button>
-        </form>
-        <div id="responseMsg"></div>
-        <div id="h5p-container" style="width: 50%"></div>
-        <script type="text/javascript">
-            document.addEventListener('DOMContentLoaded', function () {
-              const el = document.getElementById('h5p-container');
-              const options = {
-                h5pJsonPath: '/Test/assets/h5p-content', // Path to the extracted H5P content
-                frameJs: '/Test/assets/h5p-player/frame.bundle.js', // Path to player's frame.bundle.js
-                frameCss: '/Test/assets/h5p-player/styles/h5p.css', // Path to player's h5p.css
-                librariesPath: '/Test/assets/h5p-libraries'
-              };
-              let h5p=new H5PStandalone.H5P(el, options);
-              console.log(h5p);
-            });            
-        </script>    
-    </body>
-</html>
+                console.log("Customer's data for "+customer.id+" saved on session storage.");
+}
+
+
+
+class MyClass {
+  somethingCool = 5;
+  get somethingCool() {
+    return this.somethingCool; 
+  }
+
+  set somethingCool(value) {
+    this.somethingCool = value; 
+  }
+}
+
+const x = new MyClass();
+JSON.stringify(x); // '{}'
+
+x.somethingCool = 10;
+JSON.stringify(x); // '{}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

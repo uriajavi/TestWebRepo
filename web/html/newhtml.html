@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Página de prueba de accesibilidad</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <header role="banner">
+            <nav role="navigation" aria-label="Menú de navegación">
+              <ul role="list">
+                <li role="listitem">
+                  <a href="/" aria-current="page">Casa</a>
+                </li>
+                <li role="listitem">
+                  <a href="/about">Acerca de..</a>
+                </li>
+              </ul>
+            </nav>
+        </header>
+        <main role="main">
+          <h1>Datos personales</h1>
+          <div>
+              <form role="form" aria-label="Formulario de contacto">
+                <label htmlFor="age-input">
+                    Edad <span >*</span>
+                </label>
+                <input
+                    id="age-input"
+                    type="number"
+                    min="18"
+                    max="120"
+                    step="1"
+                    aria-required="true"
+                    aria-describedby="age-hint age-error"
+                    aria-invalid="false"
+                />
+                <p id="age-hint" role="comment">
+                  Edad debe estar entre 18 y 120
+                </p>
+                <p id="age-error" role="alert">
+                  Edad debe estar entre 18 y 120
+                </p>
+              </form>
+          </div>
+        </main>
+    </body>
+</html>
