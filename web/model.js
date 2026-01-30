@@ -1,7 +1,6 @@
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * @todo Convert function to Class Customer
+ * @todo Add toJSON method in order for Customer to be formatted as server side expects when stringifying 
  */
 function Customer(  id, 
                     firstName, 
